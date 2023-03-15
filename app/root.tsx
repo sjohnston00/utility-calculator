@@ -18,7 +18,7 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Remix Notes",
+  title: "Utilities Calculator",
   viewport: "width=device-width,initial-scale=1",
 });
 
@@ -30,12 +30,12 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full dark:bg-neutral-800">
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className="mx-auto h-full max-w-6xl px-4 dark:text-white">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
