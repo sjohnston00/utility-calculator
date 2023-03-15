@@ -72,13 +72,13 @@ export default function New() {
         <div className="flex gap-2">
           <Link
             to="/dashboard"
-            className="rounded bg-sky-600 py-2 px-4 hover:bg-sky-500 active:bg-sky-600"
+            className="rounded bg-sky-600 py-2 px-4 text-white hover:bg-sky-500 active:bg-sky-600"
           >
             Back
           </Link>
           <button
             type="submit"
-            className="rounded bg-emerald-600 py-2 px-4 hover:bg-emerald-500 active:bg-emerald-600"
+            className="rounded bg-emerald-600 py-2 px-4 text-white hover:bg-emerald-500 active:bg-emerald-600"
           >
             Add
           </button>

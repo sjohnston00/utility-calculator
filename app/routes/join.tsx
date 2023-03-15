@@ -100,7 +100,8 @@ export default function Join() {
               ref={emailRef}
               id="email"
               required
-              autoFocus={true}
+              data-testid="email"
+              role="textbox"
               name="email"
               type="email"
               autoComplete="email"
@@ -127,6 +128,7 @@ export default function Join() {
               ref={passwordRef}
               name="password"
               type="password"
+              data-testid="password"
               placeholder="Password"
               autoComplete="current-password"
               aria-invalid={actionData?.errors?.password ? true : undefined}
