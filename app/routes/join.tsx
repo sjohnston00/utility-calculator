@@ -101,7 +101,6 @@ export default function Join() {
               id="email"
               required
               data-testid="email"
-              role="textbox"
               name="email"
               type="email"
               autoComplete="email"

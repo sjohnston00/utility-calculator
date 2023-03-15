@@ -1,10 +1,10 @@
-import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import React from "react";
+import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import { Line } from "react-chartjs-2";
-import "chart.js/auto";
-import { ActionArgs, LoaderArgs } from "@remix-run/server-runtime";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
+import "chart.js/auto";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);

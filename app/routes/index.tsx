@@ -1,4 +1,6 @@
-import { json, LoaderArgs, redirect } from "@remix-run/node";
+import React from "react";
+import { json, redirect } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { getUserId } from "~/session.server";
 

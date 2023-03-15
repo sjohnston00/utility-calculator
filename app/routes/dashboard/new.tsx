@@ -1,6 +1,6 @@
 import React from "react";
-import { ActionArgs } from "@remix-run/node";
-import { Form, Link, useActionData } from "@remix-run/react";
+import type { ActionArgs } from "@remix-run/node";
+import { Form, Link } from "@remix-run/react";
 import { prisma } from "~/db.server";
 import { requireUserId } from "~/session.server";
 
@@ -34,7 +34,6 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function New() {
-  const actionData = useActionData<typeof action>();
   return (
     <div className="mt-4">
       <Form method="post">
