@@ -61,8 +61,8 @@ export default function New() {
           <input
             type="number"
             step={0.01}
-            name="gas"
-            id="gas"
+            name="electric"
+            id="electric"
             placeholder="Electric"
             className="rounded bg-neutral-100 px-3 py-2 pl-8 text-black dark:bg-neutral-700 dark:text-white"
             required
