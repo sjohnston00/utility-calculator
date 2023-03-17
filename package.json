@@ -36,6 +36,7 @@
     "@remix-run/server-runtime": "^1.14.2",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.2.1",
+    "date-fns": "^2.29.3",
     "isbot": "^3.6.5",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",

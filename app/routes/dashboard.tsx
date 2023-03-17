@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import { Line } from "react-chartjs-2";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
 import "chart.js/auto";
+import { format } from "date-fns";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -36,10 +37,12 @@ export const action = async ({ request }: ActionArgs) => {
 
 export default function Index() {
   const { readings } = useLoaderData<typeof loader>();
-
   const gasData = readings.map((reading) => reading.gasCreditReading);
   const electricData = readings.map((reading) => reading.electricCreditReading);
-  const labels = readings.map((d) => new Date(d.createdAt).toLocaleString());
+  const labels = readings.map((d) =>
+    format(new Date(d.createdAt), "dd / MM / yy")
+  );
+
   return (
     <div>
       <h1 className="mb-8 text-5xl font-bold tracking-wide">Dasboard</h1>
@@ -69,25 +72,107 @@ export default function Index() {
         </Form>
       </div>
       <Outlet />
-      <Line
-        options={{
-          color: "white",
-          maintainAspectRatio: true,
-          responsive: true,
-          datasets: {
-            line: {
-              tension: 0.15,
+      <div className="mt-8 h-96">
+        <Line
+          options={{
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            color: "white",
+            datasets: {
+              line: {
+                tension: 0.35,
+                borderCapStyle: "round",
+              },
             },
-          },
-        }}
-        data={{
-          labels: labels,
-          datasets: [
-            { data: gasData, label: "🔥" },
-            { data: electricData, label: "⚡" },
-          ],
-        }}
-      />
+            devicePixelRatio: 1,
+            elements: {
+              point: {
+                radius: 0,
+              },
+            },
+            plugins: {
+              legend: {
+                onClick: () => null,
+              },
+            },
+            scales: {
+              x: {
+                offset: true,
+                border: {
+                  display: false,
+                  dash: [4, 0, 4],
+                },
+                grid: {
+                  display: false,
+                  color: "#ffffff05",
+                  lineWidth: 2,
+                  drawTicks: false,
+                },
+                ticks: {
+                  backdropPadding: 5,
+                  display: false,
+                  maxTicksLimit: 2,
+                  font: {
+                    size: 11,
+                    weight: "600",
+                  },
+                },
+              },
+              y: {
+                offset: true,
+                beginAtZero: true,
+                border: {
+                  display: false,
+                  dash: [4, 0, 4],
+                },
+                grid: {
+                  color: "#ffffff05",
+                  lineWidth: 2,
+                  drawTicks: false,
+                  offset: true,
+                },
+                ticks: {
+                  maxTicksLimit: 7,
+                  color: "gray",
+                  padding: 5,
+                  stepSize: 0.5,
+                  callback(tickValue, index, ticks) {
+                    return tickValue.toLocaleString("en-GB", {
+                      style: "currency",
+                      currency: "GBP",
+                    });
+                  },
+                  font: {
+                    size: 11,
+                    weight: "600",
+                  },
+                },
+              },
+            },
+          }}
+          data={{
+            labels: labels,
+            datasets: [
+              {
+                data: gasData,
+                label: "🔥",
+                backgroundColor: "transparent",
+                borderColor: "#4f46e5",
+              },
+              {
+                data: electricData,
+                label: "⚡",
+                backgroundColor: "transparent",
+                borderColor: "#db2777",
+              },
+            ],
+          }}
+          style={{
+            height: 900,
+          }}
+        />
+      </div>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function Index() {
   return (
-    <main className="min-h-screen bg-white dark:bg-neutral-800 sm:flex sm:items-center sm:justify-center">
+    <main className="flex min-h-screen items-center justify-center bg-white dark:bg-neutral-800">
       <div className="flex gap-2">
         <Link
           to="/join"
