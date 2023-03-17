@@ -1,0 +1,17 @@
+{
+  "name": "utility calculator",
+  "short_name": "utilites",
+  "description": "Log your pre paid gas and electric meter credit and view on the graph",
+  "icons": [
+    {
+      "src": "/android-chrome-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#262626",
+  "background_color": "#262626",
+  "display": "standalone",
+  "start_url": "/",
+  "id": "/"
+}
