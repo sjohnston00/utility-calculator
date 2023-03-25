@@ -1,5 +1,6 @@
 import React from "react";
 import type { ActionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, Link } from "@remix-run/react";
 import { prisma } from "~/db.server";
 import { requireUserId } from "~/session.server";
@@ -30,7 +31,7 @@ export const action = async ({ request }: ActionArgs) => {
     },
   });
 
-  return {};
+  throw redirect("/dashboard");
 };
 
 export default function New() {
