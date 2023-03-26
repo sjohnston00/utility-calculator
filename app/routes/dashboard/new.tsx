@@ -52,6 +52,7 @@ export default function New() {
             id="gas"
             placeholder="Gas"
             className="rounded bg-neutral-100 px-3 py-2 pl-8 text-black dark:bg-neutral-700 dark:text-white"
+            inputMode="decimal"
             required
           />
         </div>
@@ -66,6 +67,7 @@ export default function New() {
             id="electric"
             placeholder="Electric"
             className="rounded bg-neutral-100 px-3 py-2 pl-8 text-black dark:bg-neutral-700 dark:text-white"
+            inputMode="decimal"
             required
           />
         </div>

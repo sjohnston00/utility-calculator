@@ -30,6 +30,22 @@ export const action = async ({ request }: ActionArgs) => {
         userId: userId,
       },
     });
+  } else if (_action === "undo-last") {
+    const reading = await prisma.reading.findFirst({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    if (!reading) {
+      throw new Response("Reading not found", {
+        status: 404,
+      });
+    }
+    await prisma.reading.delete({
+      where: {
+        id: reading.id,
+      },
+    });
   }
 
   return {};
@@ -43,6 +59,7 @@ export default function Index() {
     format(new Date(d.createdAt), "dd / MM / yy")
   );
 
+  const hasReadings = readings.length === 0;
   return (
     <div>
       <h1 className="mb-8 text-5xl font-bold tracking-wide">Dasboard</h1>
@@ -61,13 +78,22 @@ export default function Index() {
         >
           New
         </Link>
-        <Form method="post">
+        <Form method="post" hidden={hasReadings}>
           <input type="hidden" name="_action" id="_action" value="clear-data" />
           <button
             type="submit"
             className="rounded bg-fuchsia-600 py-2 px-4 text-white hover:bg-fuchsia-500  active:bg-fuchsia-600"
           >
             Clear
+          </button>
+        </Form>
+        <Form method="post" hidden={hasReadings}>
+          <input type="hidden" name="_action" id="_action" value="undo-last" />
+          <button
+            type="submit"
+            className="rounded bg-amber-600 py-2 px-4 text-white hover:bg-amber-500  active:bg-amber-600"
+          >
+            Undo Last
           </button>
         </Form>
       </div>
