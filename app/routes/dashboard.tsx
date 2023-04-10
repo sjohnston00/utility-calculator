@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import { Line } from "react-chartjs-2";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
@@ -7,6 +7,8 @@ import { prisma } from "~/db.server";
 import "chart.js/auto";
 import { format } from "date-fns";
 import Modal from "~/components/Modal";
+import type { ChartOptions } from "chart.js/auto";
+import { log } from "console";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -69,6 +71,106 @@ export default function Index() {
   }
 
   const noReadings = readings.length === 0;
+  const borderDash = [4, 0, 4];
+  const options: ChartOptions<"line"> = {
+    animation: false,
+    responsive: true,
+    maintainAspectRatio: false,
+    color: "white",
+    onHover: (event, chartElements, chart) => {
+      if (!event.x || !event.y) return;
+      chart.update();
+
+      const { ctx, canvas } = chart;
+
+      ctx.strokeStyle = "#ffffff50";
+      ctx.setLineDash(borderDash);
+
+      ctx.beginPath();
+      ctx.moveTo(event.x, 0);
+      ctx.lineTo(event.x, canvas.height);
+      ctx.stroke();
+
+      // Draw horizontal line
+      ctx.beginPath();
+      ctx.moveTo(0, event.y);
+      ctx.lineTo(canvas.width, event.y);
+      ctx.stroke();
+    },
+    datasets: {
+      line: {
+        tension: 0.35,
+        borderCapStyle: "round",
+      },
+    },
+    devicePixelRatio: 1,
+    elements: {
+      point: {
+        radius: 0,
+      },
+    },
+    plugins: {
+      legend: {
+        onClick: () => null,
+      },
+    },
+    scales: {
+      x: {
+        offset: true,
+        border: {
+          display: false,
+          dash: borderDash,
+        },
+        grid: {
+          display: false,
+          color: "#ffffff05",
+          lineWidth: 2,
+          drawTicks: false,
+        },
+        ticks: {
+          backdropPadding: 5,
+          display: false,
+          maxTicksLimit: 2,
+          font: {
+            size: 11,
+            weight: "600",
+          },
+        },
+      },
+      y: {
+        offset: true,
+        beginAtZero: true,
+        border: {
+          display: false,
+          dash: borderDash,
+        },
+        grid: {
+          color: "#ffffff05",
+          lineWidth: 2,
+          drawTicks: false,
+          offset: true,
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 7,
+          color: "gray",
+          padding: 5,
+          stepSize: 0.5,
+          callback(tickValue, index, ticks) {
+            return tickValue.toLocaleString("en-GB", {
+              style: "currency",
+              currency: "GBP",
+            });
+          },
+          font: {
+            size: 11,
+            weight: "600",
+          },
+        },
+      },
+    },
+  };
+
   return (
     <>
       <div className="mt-8">
@@ -114,83 +216,7 @@ export default function Index() {
         <Outlet />
         <div className="mt-8 h-96">
           <Line
-            options={{
-              animation: false,
-              responsive: true,
-              maintainAspectRatio: false,
-              color: "white",
-              datasets: {
-                line: {
-                  tension: 0.35,
-                  borderCapStyle: "round",
-                },
-              },
-              devicePixelRatio: 1,
-              elements: {
-                point: {
-                  radius: 0,
-                },
-              },
-              plugins: {
-                legend: {
-                  onClick: () => null,
-                },
-              },
-              scales: {
-                x: {
-                  offset: true,
-                  border: {
-                    display: false,
-                    dash: [4, 0, 4],
-                  },
-                  grid: {
-                    display: false,
-                    color: "#ffffff05",
-                    lineWidth: 2,
-                    drawTicks: false,
-                  },
-                  ticks: {
-                    backdropPadding: 5,
-                    display: false,
-                    maxTicksLimit: 2,
-                    font: {
-                      size: 11,
-                      weight: "600",
-                    },
-                  },
-                },
-                y: {
-                  offset: true,
-                  beginAtZero: true,
-                  border: {
-                    display: false,
-                    dash: [4, 0, 4],
-                  },
-                  grid: {
-                    color: "#ffffff05",
-                    lineWidth: 2,
-                    drawTicks: false,
-                    offset: true,
-                  },
-                  ticks: {
-                    maxTicksLimit: 7,
-                    color: "gray",
-                    padding: 5,
-                    stepSize: 0.5,
-                    callback(tickValue, index, ticks) {
-                      return tickValue.toLocaleString("en-GB", {
-                        style: "currency",
-                        currency: "GBP",
-                      });
-                    },
-                    font: {
-                      size: 11,
-                      weight: "600",
-                    },
-                  },
-                },
-              },
-            }}
+            options={options}
             data={{
               labels: labels,
               datasets: [
