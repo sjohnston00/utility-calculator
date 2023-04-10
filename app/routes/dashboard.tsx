@@ -6,6 +6,7 @@ import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
 import "chart.js/auto";
 import { format } from "date-fns";
+import Modal from "~/components/Modal";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -58,147 +59,203 @@ export default function Index() {
   const labels = readings.map((d) =>
     format(new Date(d.createdAt), "dd / MM / yy")
   );
+  const [showModal, setShowModal] = useState(false);
+  function openModal() {
+    setShowModal(true);
+  }
 
-  const hasReadings = readings.length === 0;
+  function closeModal() {
+    setShowModal(false);
+  }
+
+  const noReadings = readings.length === 0;
   return (
-    <div>
-      <h1 className="mb-8 text-5xl font-bold tracking-wide">Dasboard</h1>
-      <div className="flex items-center gap-4">
-        <Form action="/logout" method="post">
-          <button
-            type="submit"
-            className="rounded bg-sky-600 py-2 px-4 text-white hover:bg-sky-500 active:bg-sky-600"
+    <>
+      <div className="mt-8">
+        <div className="flex items-center gap-4">
+          <Form action="/logout" method="post">
+            <button
+              type="submit"
+              className="rounded bg-sky-600 py-2 px-4 text-white hover:bg-sky-500 active:bg-sky-600"
+            >
+              Logout
+            </button>
+          </Form>
+          <Link
+            to="new"
+            className="rounded bg-emerald-600 py-2 px-4 text-white hover:bg-emerald-500  active:bg-emerald-600"
           >
-            Logout
-          </button>
-        </Form>
-        <Link
-          to="new"
-          className="rounded bg-emerald-600 py-2 px-4 text-white hover:bg-emerald-500  active:bg-emerald-600"
-        >
-          New
-        </Link>
-        <Form method="post" hidden={hasReadings}>
-          <input type="hidden" name="_action" id="_action" value="clear-data" />
+            New
+          </Link>
           <button
             type="submit"
             className="rounded bg-fuchsia-600 py-2 px-4 text-white hover:bg-fuchsia-500  active:bg-fuchsia-600"
+            disabled={noReadings}
+            hidden={noReadings}
+            onClick={openModal}
           >
             Clear
           </button>
-        </Form>
-        <Form method="post" hidden={hasReadings}>
-          <input type="hidden" name="_action" id="_action" value="undo-last" />
-          <button
-            type="submit"
-            className="rounded bg-amber-600 py-2 px-4 text-white hover:bg-amber-500  active:bg-amber-600"
-          >
-            Undo Last
-          </button>
-        </Form>
-      </div>
-      <Outlet />
-      <div className="mt-8 h-96">
-        <Line
-          options={{
-            animation: false,
-            responsive: true,
-            maintainAspectRatio: false,
-            color: "white",
-            datasets: {
-              line: {
-                tension: 0.35,
-                borderCapStyle: "round",
-              },
-            },
-            devicePixelRatio: 1,
-            elements: {
-              point: {
-                radius: 0,
-              },
-            },
-            plugins: {
-              legend: {
-                onClick: () => null,
-              },
-            },
-            scales: {
-              x: {
-                offset: true,
-                border: {
-                  display: false,
-                  dash: [4, 0, 4],
-                },
-                grid: {
-                  display: false,
-                  color: "#ffffff05",
-                  lineWidth: 2,
-                  drawTicks: false,
-                },
-                ticks: {
-                  backdropPadding: 5,
-                  display: false,
-                  maxTicksLimit: 2,
-                  font: {
-                    size: 11,
-                    weight: "600",
-                  },
+          <Form method="post" hidden={noReadings}>
+            <input
+              type="hidden"
+              name="_action"
+              id="_action"
+              value="undo-last"
+            />
+            <button
+              type="submit"
+              className="rounded bg-amber-600 py-2 px-4 text-white hover:bg-amber-500  active:bg-amber-600"
+            >
+              Undo Last
+            </button>
+          </Form>
+        </div>
+        <Outlet />
+        <div className="mt-8 h-96">
+          <Line
+            options={{
+              animation: false,
+              responsive: true,
+              maintainAspectRatio: false,
+              color: "white",
+              datasets: {
+                line: {
+                  tension: 0.35,
+                  borderCapStyle: "round",
                 },
               },
-              y: {
-                offset: true,
-                beginAtZero: true,
-                border: {
-                  display: false,
-                  dash: [4, 0, 4],
+              devicePixelRatio: 1,
+              elements: {
+                point: {
+                  radius: 0,
                 },
-                grid: {
-                  color: "#ffffff05",
-                  lineWidth: 2,
-                  drawTicks: false,
+              },
+              plugins: {
+                legend: {
+                  onClick: () => null,
+                },
+              },
+              scales: {
+                x: {
                   offset: true,
-                },
-                ticks: {
-                  maxTicksLimit: 7,
-                  color: "gray",
-                  padding: 5,
-                  stepSize: 0.5,
-                  callback(tickValue, index, ticks) {
-                    return tickValue.toLocaleString("en-GB", {
-                      style: "currency",
-                      currency: "GBP",
-                    });
+                  border: {
+                    display: false,
+                    dash: [4, 0, 4],
                   },
-                  font: {
-                    size: 11,
-                    weight: "600",
+                  grid: {
+                    display: false,
+                    color: "#ffffff05",
+                    lineWidth: 2,
+                    drawTicks: false,
+                  },
+                  ticks: {
+                    backdropPadding: 5,
+                    display: false,
+                    maxTicksLimit: 2,
+                    font: {
+                      size: 11,
+                      weight: "600",
+                    },
+                  },
+                },
+                y: {
+                  offset: true,
+                  beginAtZero: true,
+                  border: {
+                    display: false,
+                    dash: [4, 0, 4],
+                  },
+                  grid: {
+                    color: "#ffffff05",
+                    lineWidth: 2,
+                    drawTicks: false,
+                    offset: true,
+                  },
+                  ticks: {
+                    maxTicksLimit: 7,
+                    color: "gray",
+                    padding: 5,
+                    stepSize: 0.5,
+                    callback(tickValue, index, ticks) {
+                      return tickValue.toLocaleString("en-GB", {
+                        style: "currency",
+                        currency: "GBP",
+                      });
+                    },
+                    font: {
+                      size: 11,
+                      weight: "600",
+                    },
                   },
                 },
               },
-            },
-          }}
-          data={{
-            labels: labels,
-            datasets: [
-              {
-                data: gasData,
-                label: "🔥",
-                backgroundColor: "transparent",
-                borderColor: "#4f46e5",
-              },
-              {
-                data: electricData,
-                label: "⚡",
-                backgroundColor: "transparent",
-                borderColor: "#db2777",
-              },
-            ],
-          }}
-          style={{
-            height: 900,
-          }}
-        />
+            }}
+            data={{
+              labels: labels,
+              datasets: [
+                {
+                  data: gasData,
+                  label: "🔥",
+                  backgroundColor: "transparent",
+                  borderColor: "#4f46e5",
+                },
+                {
+                  data: electricData,
+                  label: "⚡",
+                  backgroundColor: "transparent",
+                  borderColor: "#db2777",
+                },
+              ],
+            }}
+            style={{
+              height: 900,
+            }}
+          />
+        </div>
       </div>
-    </div>
+      <Modal
+        closeModal={closeModal}
+        isOpen={showModal}
+        title="Are you sure you want to clear all the data?"
+      >
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">
+            This will delete all submitted readings. This action cannot be
+            undone.
+          </p>
+        </div>
+        <div className="mt-4">
+          <Form
+            method="post"
+            hidden={noReadings}
+            reloadDocument
+            className="flex items-center gap-2"
+          >
+            <input
+              type="hidden"
+              name="_action"
+              id="_action"
+              value="clear-data"
+            />
+
+            <button
+              type="button"
+              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              onClick={closeModal}
+            >
+              No
+            </button>
+            <button
+              type="submit"
+              className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+              onClick={closeModal}
+            >
+              Yes
+            </button>
+          </Form>
+        </div>
+      </Modal>
+    </>
   );
 }
