@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import Modal from "~/components/Modal";
 import type { ChartOptions } from "chart.js/auto";
 import { log } from "console";
+import CurrentBox from "~/components/CurrentBox";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -58,6 +59,8 @@ export default function Index() {
   const { readings } = useLoaderData<typeof loader>();
   const gasData = readings.map((reading) => reading.gasCreditReading);
   const electricData = readings.map((reading) => reading.electricCreditReading);
+  const currentGasAmount = gasData.at(-1);
+  const currentElectricAmount = electricData.at(-1);
   const labels = readings.map((d) =>
     format(new Date(d.createdAt), "dd / MM / yy")
   );
@@ -173,7 +176,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="mt-8">
+      <div className="my-8">
         <div className="flex items-center gap-4">
           <Form action="/logout" method="post">
             <button
@@ -239,6 +242,8 @@ export default function Index() {
             }}
           />
         </div>
+        <CurrentBox title="Electric" value={Number(currentElectricAmount)} />
+        <CurrentBox title="Gas" value={Number(currentGasAmount)} />
       </div>
       <Modal
         closeModal={closeModal}
