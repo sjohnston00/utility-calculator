@@ -53,12 +53,12 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full dark:bg-neutral-800">
+    <html lang="en" className="min-h-full dark:bg-neutral-800">
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="mx-auto h-full max-w-6xl px-4 dark:text-white">
+      <body className="mx-auto mb-8 min-h-full max-w-6xl px-4 dark:text-white">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
-import { Line } from "react-chartjs-2";
+import { Doughnut, Line } from "react-chartjs-2";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
 import "chart.js/auto";
 import { format } from "date-fns";
 import Modal from "~/components/Modal";
-import type { ChartOptions } from "chart.js/auto";
+import { ChartOptions } from "chart.js/auto";
+import { Chart } from "chart.js";
 import { log } from "console";
 import CurrentBox from "~/components/CurrentBox";
+import DoughnutBox from "~/components/DoughnutBox";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+
+Chart.register(ChartDataLabels);
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -59,8 +64,8 @@ export default function Index() {
   const { readings } = useLoaderData<typeof loader>();
   const gasData = readings.map((reading) => reading.gasCreditReading);
   const electricData = readings.map((reading) => reading.electricCreditReading);
-  const currentGasAmount = gasData.at(-1);
-  const currentElectricAmount = electricData.at(-1);
+  const currentGasAmount = gasData.at(-1) || 0;
+  const currentElectricAmount = electricData.at(-1) || 0;
   const labels = readings.map((d) =>
     format(new Date(d.createdAt), "dd / MM / yy")
   );
@@ -176,7 +181,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="my-8">
+      <div className="mt-8">
         <div className="flex items-center gap-4">
           <Form action="/logout" method="post">
             <button
@@ -244,6 +249,46 @@ export default function Index() {
         </div>
         <CurrentBox title="Electric" value={Number(currentElectricAmount)} />
         <CurrentBox title="Gas" value={Number(currentGasAmount)} />
+        <DoughnutBox>
+          <Doughnut
+            style={{ height: 275 }}
+            className="font-sans"
+            options={{
+              events: [],
+              animation: false,
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                datalabels: {
+                  font: {
+                    family: "monospace",
+                  },
+                  opacity: 0.7,
+                  color: "white",
+                  formatter: (x) => {
+                    return Number(x).toLocaleString("en-GB", {
+                      style: "currency",
+                      currency: "GBP",
+                      minimumFractionDigits: 2,
+                    });
+                  },
+                },
+              },
+            }}
+            data={{
+              labels: ["🔥", "⚡"],
+              datasets: [
+                {
+                  data: [currentGasAmount, currentElectricAmount],
+                  backgroundColor: ["#4f46e5", "#db2777"],
+                  hoverBackgroundColor: ["#4f46e5", "#db2777"],
+                  hoverBorderColor: ["#4f46e5", "#db2777"],
+                  borderColor: ["#4f46e5", "#db2777"],
+                },
+              ],
+            }}
+          />
+        </DoughnutBox>
       </div>
       <Modal
         closeModal={closeModal}
