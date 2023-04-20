@@ -138,10 +138,10 @@ export default function Index() {
         },
         ticks: {
           backdropPadding: 5,
-          display: false,
-          maxTicksLimit: 2,
+          maxTicksLimit: 5,
+          color: "#ffffff65",
           font: {
-            size: 11,
+            size: 10,
             weight: "600",
           },
         },
@@ -154,15 +154,14 @@ export default function Index() {
           dash: borderDash,
         },
         grid: {
-          color: "#ffffff05",
+          color: "#ffffff15",
           lineWidth: 2,
           drawTicks: false,
-          offset: true,
         },
         ticks: {
           autoSkip: true,
           maxTicksLimit: 7,
-          color: "gray",
+          color: "#ffffff65",
           padding: 5,
           stepSize: 0.5,
           callback(tickValue, index, ticks) {
@@ -223,73 +222,80 @@ export default function Index() {
           </Form>
         </div>
         <Outlet />
-        <div className="mt-8 h-96">
-          <Line
-            options={options}
-            data={{
-              labels: labels,
-              datasets: [
-                {
-                  data: gasData,
-                  label: "🔥",
-                  backgroundColor: "transparent",
-                  borderColor: "#4f46e5",
+        <div className="mt-8 grid grid-cols-1 items-stretch gap-4 lg:grid-cols-4">
+          <div className="max-h-96 rounded-lg bg-neutral-700 px-4 py-8 shadow-lg lg:col-span-4">
+            <Line
+              options={options}
+              data={{
+                labels: labels,
+                datasets: [
+                  {
+                    data: gasData,
+                    label: "🔥",
+                    backgroundColor: "transparent",
+                    borderColor: "#4f46e5",
+                  },
+                  {
+                    data: electricData,
+                    label: "⚡",
+                    backgroundColor: "transparent",
+                    borderColor: "#db2777",
+                  },
+                ],
+              }}
+              style={{
+                height: 900,
+              }}
+            />
+          </div>
+          <div className="grid grid-cols-1 grid-rows-2 gap-4 lg:col-span-2">
+            <CurrentBox
+              title="Electric"
+              value={Number(currentElectricAmount)}
+            />
+            <CurrentBox title="Gas" value={Number(currentGasAmount)} />
+          </div>
+          <DoughnutBox>
+            <Doughnut
+              style={{ height: 275 }}
+              className="font-sans"
+              options={{
+                events: [],
+                animation: false,
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  datalabels: {
+                    font: {
+                      family: "monospace",
+                    },
+                    opacity: 0.7,
+                    color: "white",
+                    formatter: (x) => {
+                      return Number(x).toLocaleString("en-GB", {
+                        style: "currency",
+                        currency: "GBP",
+                        minimumFractionDigits: 2,
+                      });
+                    },
+                  },
                 },
-                {
-                  data: electricData,
-                  label: "⚡",
-                  backgroundColor: "transparent",
-                  borderColor: "#db2777",
-                },
-              ],
-            }}
-            style={{
-              height: 900,
-            }}
-          />
+              }}
+              data={{
+                labels: ["🔥", "⚡"],
+                datasets: [
+                  {
+                    data: [currentGasAmount, currentElectricAmount],
+                    backgroundColor: ["#4f46e5", "#db2777"],
+                    hoverBackgroundColor: ["#4f46e5", "#db2777"],
+                    hoverBorderColor: ["#4f46e5", "#db2777"],
+                    borderColor: ["#4f46e5", "#db2777"],
+                  },
+                ],
+              }}
+            />
+          </DoughnutBox>
         </div>
-        <CurrentBox title="Electric" value={Number(currentElectricAmount)} />
-        <CurrentBox title="Gas" value={Number(currentGasAmount)} />
-        <DoughnutBox>
-          <Doughnut
-            style={{ height: 275 }}
-            className="font-sans"
-            options={{
-              events: [],
-              animation: false,
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                datalabels: {
-                  font: {
-                    family: "monospace",
-                  },
-                  opacity: 0.7,
-                  color: "white",
-                  formatter: (x) => {
-                    return Number(x).toLocaleString("en-GB", {
-                      style: "currency",
-                      currency: "GBP",
-                      minimumFractionDigits: 2,
-                    });
-                  },
-                },
-              },
-            }}
-            data={{
-              labels: ["🔥", "⚡"],
-              datasets: [
-                {
-                  data: [currentGasAmount, currentElectricAmount],
-                  backgroundColor: ["#4f46e5", "#db2777"],
-                  hoverBackgroundColor: ["#4f46e5", "#db2777"],
-                  hoverBorderColor: ["#4f46e5", "#db2777"],
-                  borderColor: ["#4f46e5", "#db2777"],
-                },
-              ],
-            }}
-          />
-        </DoughnutBox>
       </div>
       <Modal
         closeModal={closeModal}
