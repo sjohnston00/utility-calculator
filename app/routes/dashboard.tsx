@@ -118,10 +118,11 @@ export default function Index() {
       },
     },
     plugins: {
-      legend: {
-        onClick: () => null,
+      datalabels: {
+        display: false,
       },
     },
+    events: [],
     scales: {
       x: {
         offset: true,
