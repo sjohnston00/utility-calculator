@@ -182,31 +182,31 @@ export default function Index() {
   return (
     <>
       <div className="mt-8">
-        <div className="flex items-center gap-4">
-          <Form action="/logout" method="post">
+        <div className="grid grid-cols-1 justify-center gap-4 lg:grid-cols-2">
+          <Form action="/logout" method="post" className="block">
             <button
               type="submit"
-              className="rounded bg-sky-600 py-2 px-4 text-white hover:bg-sky-500 active:bg-sky-600"
+              className="w-full rounded bg-sky-600 py-3 px-4 text-white hover:bg-sky-500 active:bg-sky-600"
             >
               Logout
             </button>
           </Form>
           <Link
             to="new"
-            className="rounded bg-emerald-600 py-2 px-4 text-white hover:bg-emerald-500  active:bg-emerald-600"
+            className="block rounded bg-emerald-600 py-3 px-4 text-center text-white hover:bg-emerald-500  active:bg-emerald-600"
           >
             New
           </Link>
           <button
             type="submit"
-            className="rounded bg-fuchsia-600 py-2 px-4 text-white hover:bg-fuchsia-500  active:bg-fuchsia-600"
+            className="block rounded bg-fuchsia-600 py-3 px-4 text-center text-white hover:bg-fuchsia-500  active:bg-fuchsia-600"
             disabled={noReadings}
             hidden={noReadings}
             onClick={openModal}
           >
             Clear
           </button>
-          <Form method="post" hidden={noReadings}>
+          <Form method="post" hidden={noReadings} className="block">
             <input
               type="hidden"
               name="_action"
@@ -215,7 +215,7 @@ export default function Index() {
             />
             <button
               type="submit"
-              className="rounded bg-amber-600 py-2 px-4 text-white hover:bg-amber-500  active:bg-amber-600"
+              className="w-full rounded bg-amber-600 py-3 px-4 text-white hover:bg-amber-500  active:bg-amber-600"
             >
               Undo Last
             </button>
