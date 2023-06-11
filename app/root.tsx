@@ -1,4 +1,8 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  V2_MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -9,12 +13,12 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import tailwindStylesheet from "~/tailwind.css";
 import { getUser } from "./session.server";
 
 export const links: LinksFunction = () => {
   return [
-    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "stylesheet", href: tailwindStylesheet },
     {
       rel: "apple-touch-icon",
       sizes: "152x152",
@@ -37,13 +41,15 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "Utilities Calculator",
-  viewport: "width=device-width,initial-scale=1",
-  "msapplication-TileColor": "#262626",
-  "theme-color": "#262626",
-});
+export const meta: V2_MetaFunction = () => [
+  {
+    charset: "utf-8",
+  },
+  { title: "Utilities Calculator" },
+  { viewport: "width=device-width,initial-scale=1" },
+  { "msapplication-tilecolor": "#262626" },
+  { "theme-color": "#262626" },
+];
 
 export async function loader({ request }: LoaderArgs) {
   return json({

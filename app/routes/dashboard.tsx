@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { Form, Link, Outlet, useLoaderData } from "@remix-run/react";
 import { Doughnut, Line } from "react-chartjs-2";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
 import { prisma } from "~/db.server";
 import "chart.js/auto";
 import { format } from "date-fns";
 import Modal from "~/components/Modal";
-import { ChartOptions } from "chart.js/auto";
+import type { ChartOptions } from "chart.js/auto";
 import { Chart } from "chart.js";
-import { log } from "console";
 import CurrentBox from "~/components/CurrentBox";
 import DoughnutBox from "~/components/DoughnutBox";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 Chart.register(ChartDataLabels);
+
+export const meta: V2_MetaFunction = () => [{ title: "Dashboard" }];
 
 export const loader = async ({ request }: LoaderArgs) => {
   const userId = await requireUserId(request);
@@ -186,20 +187,20 @@ export default function Index() {
           <Form action="/logout" method="post" className="block">
             <button
               type="submit"
-              className="w-full rounded bg-sky-600 py-3 px-4 text-white hover:bg-sky-500 active:bg-sky-600"
+              className="w-full rounded bg-sky-600 px-4 py-3 text-white hover:bg-sky-500 active:bg-sky-600"
             >
               Logout
             </button>
           </Form>
           <Link
             to="new"
-            className="block rounded bg-emerald-600 py-3 px-4 text-center text-white hover:bg-emerald-500  active:bg-emerald-600"
+            className="block rounded bg-emerald-600 px-4 py-3 text-center text-white hover:bg-emerald-500  active:bg-emerald-600"
           >
             New
           </Link>
           <button
             type="submit"
-            className="block rounded bg-fuchsia-600 py-3 px-4 text-center text-white hover:bg-fuchsia-500  active:bg-fuchsia-600"
+            className="block rounded bg-fuchsia-600 px-4 py-3 text-center text-white hover:bg-fuchsia-500  active:bg-fuchsia-600"
             disabled={noReadings}
             hidden={noReadings}
             onClick={openModal}
@@ -215,7 +216,7 @@ export default function Index() {
             />
             <button
               type="submit"
-              className="w-full rounded bg-amber-600 py-3 px-4 text-white hover:bg-amber-500  active:bg-amber-600"
+              className="w-full rounded bg-amber-600 px-4 py-3 text-white hover:bg-amber-500  active:bg-amber-600"
             >
               Undo Last
             </button>

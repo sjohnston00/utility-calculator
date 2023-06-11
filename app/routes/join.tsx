@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
@@ -64,11 +64,7 @@ export async function action({ request }: ActionArgs) {
   });
 }
 
-export const meta: MetaFunction = () => {
-  return {
-    title: "Sign Up",
-  };
-};
+export const meta: V2_MetaFunction = () => [{ title: "Sign Up" }];
 
 export default function Join() {
   const [searchParams] = useSearchParams();
@@ -92,7 +88,7 @@ export default function Join() {
           <div className="relative mb-2">
             <label
               htmlFor="Email"
-              className="absolute top-1/2 left-2 -translate-y-1/2"
+              className="absolute left-2 top-1/2 -translate-y-1/2"
             >
               📧
             </label>
@@ -118,7 +114,7 @@ export default function Join() {
           <div className="relative mb-2">
             <label
               htmlFor="password"
-              className="absolute top-1/2 left-2 -translate-y-1/2"
+              className="absolute left-2 top-1/2 -translate-y-1/2"
             >
               🔐
             </label>
@@ -143,7 +139,7 @@ export default function Join() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-sky-500  py-2 px-4 text-white hover:bg-sky-600 focus:bg-sky-400"
+            className="w-full rounded bg-sky-500  px-4 py-2 text-white hover:bg-sky-600 focus:bg-sky-400"
           >
             Create Account
           </button>
